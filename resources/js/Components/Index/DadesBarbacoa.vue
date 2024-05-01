@@ -123,16 +123,14 @@ function showMoreComments() {
             </p>
 
             <div class="images flex pt-3">
-                <div class="w-full">
-                    <div class="flex gap-1">
-                        <div v-for="(image) in images" class="w-full md:w-1/2">
-                            <img 
-                                :src="image.src" 
-                                :alt="image.alt" 
-                                class="object-cover w-full h-32 cursor-pointer"
-                                @click="showModal(image)"
-                            >
-                        </div>
+                <div class="grid grid-cols-2 gap-1 w-full">
+                    <div v-for="(image) in images" class="w-full">
+                        <img 
+                            :src="image.src" 
+                            :alt="image.alt" 
+                            class="object-cover w-full h-28 cursor-pointer"
+                            @click="showModal(image)"
+                        >
                     </div>
                 </div>
             </div>
@@ -166,7 +164,7 @@ function showMoreComments() {
                 </div>
             </div>
         </div>
-
+        
         <!-- CAROUSEL IMAGES -->
         <dialog id="modalImages" class="modal" @click.self="closeModal">
             <div class="carousel w-5/6 max-h-[80dvh]">
@@ -229,9 +227,5 @@ textarea {
 
 .modal-box{
     padding: 0;
-}
-
-.carousel * {
-    color: white !important;
 }
 </style>

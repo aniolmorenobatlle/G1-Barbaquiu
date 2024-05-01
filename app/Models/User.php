@@ -53,7 +53,6 @@ class User extends Authenticatable
         ];
     }
 
-
     public function sentFriendRequests()
     {
         return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id')->withPivot('accepted')->withTimestamps();
@@ -143,6 +142,7 @@ class User extends Authenticatable
     {
         $barbecue->recieveInvitationAcceptance($this);
     }
+
     public function removeFriend(User $user)
     {
         $this->acceptedSentFriendRequests()->detach($user->id);

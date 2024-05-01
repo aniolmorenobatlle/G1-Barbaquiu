@@ -10,6 +10,7 @@ class Barbecue extends Model
     use HasFactory, \Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
     protected $fillable = [
+        'id',
         'user_id',
         'latitude',
         'longitude',
@@ -66,5 +67,10 @@ class Barbecue extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(Images::class, 'barbecue_id');
     }
 }

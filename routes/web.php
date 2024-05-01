@@ -10,6 +10,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\ImagesController;
 
 
 Route::get('/', [IndexController::class, 'show'])->name('index');
@@ -41,6 +42,8 @@ Route::post('/sendfriendrequest/{id}', [FriendsController::class, 'store'])->nam
 Route::get('/api/user', [UserController::class, 'apiShowLogged']);
 
 Route::resource('barbecues', BarbecuesController::class);
+
+Route::resource('/barbecues/{barbecueId}/images', ImagesController::class);
 
 require __DIR__ . '/auth.php';
 

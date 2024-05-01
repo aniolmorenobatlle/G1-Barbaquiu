@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Images;
 
-class BarbecuesController extends Controller
+class ImagesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,13 +28,30 @@ class BarbecuesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, string $barbecueId)
     {
-        $user = auth()->user();
-        $barbecue = $user->barbecues()->create($request->all());
+        $images = $request->input('images');
 
-        return response()->json($barbecue);
+        foreach ($images as $image) {
+            $path = $image->store('public/assets/img/barbecues');
+        }
+
+        // foreach ($images as $image) {
+        //     $imageModel = new Images();
+
+        //     $imageModel->barbecue_id = $barbecueId;
+
+        //     $image = time() . '_' . $image;
+
+        //     $url = '/assets/img/barbecues/' . $image;
+
+        //     $imageModel->path = $url;
+        //     $imageModel->save();
+        // }
+
+        return response()->json(['message' => 'Imatges pujades amb èxit'], 200);
     }
+
 
     /**
      * Display the specified resource.
