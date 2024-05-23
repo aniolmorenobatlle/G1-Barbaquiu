@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useBarbecueStore } from "@/stores/barbecue";
 import Gallery from "@/Components/Galleries/Gallery.vue";
+import axios from 'axios';
 
 const barbecueStore = useBarbecueStore();
 const barbecue = barbecueStore.barbecue;
@@ -13,9 +14,6 @@ const openimgpath = ref('');
 const openImageModal = (image) => {
     selectedImage.value = image;
     openedImage.value = true;
-    console.log("Opened image modal");
-    console.log(selectedImage.value.id);
-    console.log(selectedImage.value.path);
     openimgpath.value = selectedImage.value.path;
 
 };
@@ -23,13 +21,22 @@ const openImageModal = (image) => {
 const closeImageModal = () => {
     openedImage.value = false;
     selectedImage.value = null;
-    console.log("Close image modal");
-
 };
+
+const deleteImage = async (imageId) => {
+    try {
+        await axios.delete(`/barbecues/${barbecue.id}/images/${imageId}`);
+
+        barbecue.images = barbecue.images.filter(image => image.id !== imageId);
+    } catch (error) {
+        console.error('Error eliminant la imatge:', error);
+    }
+};
+
 </script>
 
 <template>
-    <div class="flex justify-center items-center ">
+    <div class="flex justify-center items-center cursor-default">
         <svg width="50px" height="50px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
             stroke="#000000" stroke-width="0.00024000000000000003">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -44,15 +51,24 @@ const closeImageModal = () => {
         <p class="font-extrabold">Album de imatges</p>
     </div>
 
-
-    <dialog id="my_modal_2" class="modal">
+    <dialog id="my_modal_2" class="modal cursor-default">
         <div class="modal-box" v-if="barbecueStore">
             <div class="columns-2 gap-2 imgsection" :class="{'columns-2': barbecue.images.length < 3, 'columns-3': barbecue.images.length > 2 && barbecue.images.length < 5, 'columns-4': barbecue.images.length > 4}"
             >
-                <div v-for="image in barbecue.images" :key="image.id" class="break-inside-avoid mb-2 h-full w-full">
-                    <img :src="image.path" class="h-full max-w-full rounded-lg object-cover fit-content"
-                        @click="openImageModal(image)" alt="">
+                <div v-for="image in barbecue.images" :key="image.id" class="relative break-inside-avoid mb-2 h-full w-full">
+                    <img 
+                        :src="image.path" 
+                        class="h-full max-w-full rounded-lg object-cover fit-content cursor-pointer"
+                        @click="openImageModal(image)" alt="Imatge"
+                    >
+                    <img 
+                        src="/assets/svg/deletebbq.svg" 
+                        class="absolute top-2 right-2 w-5 h-5 cursor-pointer"
+                        title="Suprimir la imatge"
+                        @click="() => deleteImage(image.id)" alt="Eliminar Imatge"
+                    >
                 </div>
+
             </div>
         </div>
         <div class="modal-box-open" v-if="barbecueStore">

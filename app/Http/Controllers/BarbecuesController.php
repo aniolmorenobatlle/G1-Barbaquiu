@@ -164,7 +164,8 @@ class BarbecuesController extends Controller
      */
     public function edit( Request $request, string $id)
     {
-        $barbecue = Barbecue::findOrFail($id);
+        $barbecue = Barbecue::where('id', $id)->with('images')->first();
+        
         return Inertia::render('Barbecues/Edit', [
             'barbecue' => $barbecue,
         ]);
@@ -178,7 +179,6 @@ class BarbecuesController extends Controller
         $barbecue = Barbecue::findOrFail($id);
         $barbecue->update($request->all());
     }
-    
 
     /**
      * Remove the specified resource from storage.

@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/updateuserdescription/{id}', [UserController::class, 'updateDescription'])->name('updateuserdescription');
     Route::resource('barbecues', BarbecuesController::class);
     Route::resource('/barbecues/{barbecueId}/images', ImagesController::class);
+    Route::delete('/barbecues/{barbecueId}/images/{imageId}', [ImagesController::class, 'destroy']);
     Route::get('/api/barbecues', [BarbecuesController::class, 'apiIndex']);
     Route::resource('/barbecues/{barbecueId}/edit', BarbecuesController::class);
 
