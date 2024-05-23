@@ -7,6 +7,8 @@ import { useAuthStore } from "@/stores/auth";
 import { Link } from '@inertiajs/vue3';
 import { useProfileStore } from "@/stores/profile";
 import Logout from './Partials/Logout.vue';
+import Banner from "@/Components/UserProfile/Banner.vue";
+
 
 const profileStore = useProfileStore();
 
@@ -15,7 +17,7 @@ authStore.updateUserData();
 
 
 </script>
-
+ 
 <template>
     <ProfileLayout title="Inici">
         <template #main-content>
@@ -35,6 +37,7 @@ authStore.updateUserData();
                 </div>
 
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-[20px]">
+                    
                     <UpdateProfileInformationForm
                         class=""
                     />

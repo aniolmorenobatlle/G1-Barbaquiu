@@ -55,7 +55,7 @@ function highlightArea(area) {
 }
 
 function resetHighlight() {
-    highlightedArea.value = null; 
+    highlightedArea.value = null;
     console.log('highlightedArea', highlightedArea.value);
 }
 
@@ -134,12 +134,22 @@ const formProduct = useForm({
     basket_product_id: null,
 });
 
-const assignProduct = (productId, memberId, basketProductId) => {
+const assignProduct = (productId, member, basketProductId) => {
     formProduct.product_id = productId;
-    formProduct.member_id = memberId;
+    formProduct.member_id = member.id;
     formProduct.basket_product_id = basketProductId;
-    formProduct.post('/assignproduct/' + barbecue.id);
-    formProduct.reset();
+    axios.post(route('assignproduct', { id: barbecue.id }), {
+        product_id: formProduct.product_id,
+        member_id: formProduct.member_id,
+        basket_product_id: formProduct.basket_product_id,
+    })
+        .then(response => {
+            console.log('Product assigned', response.data);
+            barbecueStore.setUserBasketProduct(productId, member);
+        })
+        .catch(error => {
+            console.error('Error assigning product:', error);
+        });
 }
 
 const formProductQuantity = useForm({
@@ -148,34 +158,37 @@ const formProductQuantity = useForm({
     product_id: null,
 });
 const addOldProduct = (product) => {
-  axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
-    product_name: product.name,
-    product_price: product.price,
-  })
-  .then(response => {
-    barbecueStore.setBasketProduct(product.id, response.data.quantity);
-    highlightArea('baskets');
-  })
-  .catch(error => {
-    console.error('Error adding product:', error);
-  });
+    axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
+        product_name: product.name,
+        product_price: product.price,
+    })
+        .then(response => {
+            barbecueStore.setBasketProduct(product.id, response.data.quantity);
+            highlightArea('baskets');
+        })
+        .catch(error => {
+            console.error('Error adding product:', error);
+        });
 };
 
+
 const minusProduct = (product) => {
-  axios.post(route('minusproduct', { id: barbecueStore.barbecue.id }), {
-    product_id: product.id,
-  })
-  .then(response => {
-    if (response.data.deleted) {
-      barbecueStore.removeBasketProduct(product.id);
-    } else {
-      barbecueStore.setBasketProduct(product.id, response.data.quantity);
-    }
-    highlightArea('baskets');
-  })
-  .catch(error => {
-    console.error('Error removing product:', error);
-  });
+    axios.post(route('minusproduct', { id: barbecueStore.barbecue.id }), {
+        product_id: product.id,
+    })
+        .then(response => {
+            if (response.data.deleted) {
+                console.log('Product deleted');
+                barbecueStore.removeBasketProduct(product.id);
+            } else {
+                barbecueStore.setBasketProduct(product.id, response.data.quantity);
+            }
+            highlightArea('baskets');
+        })
+        .catch(error => {
+            console.error('Error removing product:', error);
+            console.log('Product', product);
+        });
 };
 
 </script>
@@ -223,7 +236,7 @@ const minusProduct = (product) => {
                             :key="item.product.id" @click.stop>
                             <p class="w-2/5">
                                 {{ item.product.name }}</p>
-                            <div class="flex items-center gap-1" >
+                            <div class="flex items-center gap-1">
                                 <div class="minus" @click.stop="minusProduct(item.product)">
                                     <img src="/assets/svg/menosmini.svg" alt="Menys" class="img-fluid"
                                         style="width: 17px;">
@@ -253,7 +266,7 @@ const minusProduct = (product) => {
 
                                         <Link
                                             class="flex items-center bg-white gap-2 rounded-full w-full cursor-pointer">
-                                        <img :src="item.user.image" alt=""
+                                        <img :src="item.user.image ? item.user.image : '/assets/img/user.png'" alt=""
                                             class="fit-content !h-10 !w-10 rounded-full object-cover">
                                         <p>{{ item.user.name }} </p>
 
@@ -272,7 +285,8 @@ const minusProduct = (product) => {
                                     </div>
 
                                     <div class="members" v-for="member in $page.props.members" :key="member.id">
-                                        <form @click="assignProduct(item.product.id, member.id, item.id)">
+                                        <form @click="assignProduct(item.product.id, member, item.id)"
+                                            v-if="member.id !== item.user.id">
                                             <div
                                                 class="flex items-center gap-2 bg-white p-1 rounded-full mb-2 w-full members-asignar">
                                                 <div
@@ -313,18 +327,14 @@ const minusProduct = (product) => {
         <div class="dates" :class="{
             'notSelected': highlightedArea !== 'dates' && highlightedArea !== null
         }" @click="addEvent">
-            <!-- get the date 1/01/2024 in 1/01/2024 18:00h on barbacue.date -->
             <h2 v-if="barbecue.date">{{ barbecue.date.split(' ')[0] }}</h2>
             <h1 v-if="barbecue.date">{{ barbecue.date.split(' ')[1] }}</h1>
             <h2 class="" v-else="barbecue.date">No hi ha cap data programada!!</h2>
-
         </div>
-
-        <div class="album" onclick="my_modal_2.showModal()"
-        :class="{
+        <div class="album" onclick="my_modal_2.showModal()" :class="{
             'notSelected': highlightedArea !== 'album' && highlightedArea !== null
         }">
-           <PhotoAlbum/>
+            <PhotoAlbum />
         </div>
 
         <div class="maps" :class="{
@@ -369,10 +379,10 @@ const minusProduct = (product) => {
                     <p>A pagar</p>
                     <!-- my items assogned to my * quantity -->
                     <h1 v-if="barbecue.basket?.basket_product">{{
-                        barbecue.basket.basket_product.filter(item => item.user.id === authStore.user.id).reduce(
+                        barbecue.basket.basket_product.reduce(
                             (total, item) => total + parseFloat(item.product.price) * item.quantity,
                             0
-                        ).toFixed(2)
+                        ) / $page.props.members.length .toFixed(2)
                     }}<span>€</span></h1>
                     <h1 v-else>0 €</h1>
 
@@ -408,8 +418,36 @@ const minusProduct = (product) => {
                             <p>
                                 {{ member.name }}
                             </p>
+                            <div class="flex intolerances">
+                                <div v-if="member.vegetarian"
+                                    class=" w-auto flex justify-center items-center ml-2 p-1 rounded-md ">
+                                    <img src="/assets/img/intolerance/vegetarian.png" class="h-auto max-h-7"
+                                        alt="vegetarian">
+                                </div>
+                                <div v-if="member.lactose"
+                                    class=" w-auto flex justify-center items-center ml-2 p-1 rounded-md tooltip "
+                                    data-tip="Intolerant a la lactosa">
+                                    <img src="/assets/img/intolerance/lactose.png" class="h-auto max-h-7" alt="lactose">
+                                </div>
+                                <div v-if="member.gluten"
+                                    class=" w-auto flex justify-center items-center ml-2 p-1 rounded-md tooltip "
+                                    data-tip="Intolerant al gluten">
+                                    <img src="/assets/img/intolerance/gluten.png" class="h-auto max-h-7" alt="gluten">
+                                </div>
+                                <div v-if="member.spicy"
+                                    class=" w-auto flex justify-center items-center ml-2 p-1 rounded-md tooltip "
+                                    data-tip="Intolerant al picant">
+                                    <img src="/assets/img/intolerance/spicy.png" class="h-auto max-h-7" alt="spicy">
+                                </div>
+                                <div v-if="member.halal"
+                                    class=" w-auto flex justify-center items-center ml-2 p-1 rounded-md ">
+                                    <img src="/assets/img/intolerance/halal.png" class="h-auto max-h-7" alt="halal">
+                                </div>
+
+                            </div>
 
                         </div>
+
                         </Link>
                         <div class="flex justify-end w-1/2" v-if="member.id !== barbecue.user_id">
                             <Link @click="deleteMember(member.id)" class="flex items-center pr-1">
@@ -428,7 +466,7 @@ const minusProduct = (product) => {
                         </div>
 
                         <div v-if="member.id === barbecue.user_id || barbecue.friendships.find(friendship => friendship.user_id === member.id && friendship.is_admin === 1)"
-                            class="flex justify-end w-full">
+                            class="flex justify-end w-1/3">
 
                             <div class="badge badge-outline border-transparent text-[#ff5e00] ">
                                 Admin</div>
@@ -638,7 +676,7 @@ const minusProduct = (product) => {
 .album {
     grid-area: album;
     background: #f2f2f2;
-    
+
     width: auto;
     border-radius: 10px;
     display: flex;

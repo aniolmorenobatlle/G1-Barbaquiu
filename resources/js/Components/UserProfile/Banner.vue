@@ -115,7 +115,7 @@ const togglePrivateOrPublic = () => {
 const bgcolor1 = ref('#f8f9fa');
 const bgcolor2 = ref('#e9ecef');
 const bgcolor3 = ref('#dee2e6');
-
+ 
 
 onMounted(() => {
     analyzeImageColors(profileStore.user.image);

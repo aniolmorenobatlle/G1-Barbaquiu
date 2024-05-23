@@ -33,7 +33,7 @@ const updateCheckbox = (event) => {
     console.log(form);
 };
 
-
+ 
 
 </script>
 

@@ -16,7 +16,7 @@ export const useBarbecueStore = defineStore('barbecue', {
   actions: {
     setBarbecue(barbecue) {
       this.barbecue = barbecue;
-      this.basket = { ...barbecue.basket }; 
+      this.basket = { ...barbecue.basket };
     },
     fetchBarbecues(filters = this.filters) {
       this.filters = filters;
@@ -45,18 +45,38 @@ export const useBarbecueStore = defineStore('barbecue', {
         this.barbecues.push(...response.data);
       });
     },
-    setBasketProduct(productId, quantity) {
+    setBasketProduct(productId, quantity, user, name, price) {
       const product = this.basket.basket_product.find(item => item.product.id === productId);
       if (product) {
         product.quantity = quantity;
       } else {
-        this.basket.basket_product.push({ product: { id: productId }, quantity });
+        this.basket.basket_product.push({
+          product: {
+            id: productId
+            , name: name
+            , price: price
+          }, quantity, user
+        });
       }
-      this.basket = { ...this.basket }; 
+      this.basket = { ...this.basket };
+      console.log(this.basket, 'setBasketProduct');
+    },
+    setUserBasketProduct(productId, user) {
+      // assign user to product
+      const product = this.basket.basket_product.find(item => item.product.id === productId);
+      if (product) {
+        product.user = user;
+      }
+      this.basket = { ...this.basket };
+      console.log(this.basket, 'setUserBasketProduct');
     },
     removeBasketProduct(productId) {
-      this.basket.basket_product = this.basket.basket_product.filter(item => item.product.id !== productId);
-      this.basket = { ...this.basket }; 
-    },
+      const index = this.basket.basket_product.findIndex(item => item.product.id === productId);
+      if (index !== -1) {
+        this.basket.basket_product.splice(index, 1);
+      }
+      this.basket = { ...this.basket };
+      console.log(this.basket, 'removeBasketProduct');
+    }
   },
 });

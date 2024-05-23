@@ -35,39 +35,40 @@ const form = useForm({
 });
 
 const addProduct = () => {
-  axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
-    product_name: form.product_name,
-    product_price: form.product_price,
-  })
-  .then(response => {
-    if (response.data) {
-        console.log(response.data);
-      barbecueStore.addProductToBasket(response.data);
-      closeModal();
-      console.log(response.data);
-    } else {
-      throw new Error('Invalid product data from server');
-      console.log(response.data);
-    }
+    axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
+        product_name: form.product_name,
+        product_price: form.product_price,
     })
-  .catch(error => {
-    console.error('Error adding product:', error);
-  });
-  console.log(form, barbecueStore.basket.basket_product);
+        .then(response => {
+            if (response.data) {
+                console.log(response.data);
+                barbecueStore.setBasketProduct(response.data.id, response.data.quantity, authStore.user, form.product_name, form.product_price);
+                closeModal();
+                console.log(response.data);
+            } else {
+                throw new Error('Invalid product data from server');
+            }
+        })
+        .catch(error => {
+            console.error('Error adding product:', error);
+        });
+    console.log(form, barbecueStore.basket.basket_product);
 };
 
 const addOldProduct = (product) => {
-  axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
-    product_name: product.name,
-    product_price: product.price,
-  })
-  .then(response => {
-    barbecueStore.setBasketProduct(product.id, response.data.quantity);
-    highlightArea('baskets');
-  })
-  .catch(error => {
-    console.error('Error adding product:', error);
-  });
+    // user to setbarbacue
+    const user = authStore.user;
+    axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
+        product_name: product.name,
+        product_price: product.price,
+    })
+        .then(response => {
+            console.log(response.data, user, product.name, product.price);
+            barbecueStore.setBasketProduct(product.id, response.data.quantity, user, product.name, product.price);
+        })
+        .catch(error => {
+            console.error('Error adding product:', error);
+        });
 };
 
 const showMainContent = () => {
@@ -103,7 +104,7 @@ const showMainContent = () => {
                     ✕
                 </button>
             </form>
-            
+
             <div class="newproduct" v-if="showNewProduct">
                 <h3 class="font-bold text-lg cursor-pointer flex flex-row gap-2">
                     Afegir producte nou

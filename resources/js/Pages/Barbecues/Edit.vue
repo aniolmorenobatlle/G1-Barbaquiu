@@ -11,6 +11,7 @@ import PhotoAlbum from '@/Components/Barbecues/PhotoAlbum/PhotoAlbum.vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import axios from "axios";
+import FindFriendsRightAside from "@/Components/Asides/FindFriendsRightAside.vue";
 
 const authStore = useAuthStore();
 authStore.updateUserData();
@@ -30,7 +31,7 @@ const props = defineProps({
 const formQuill = ref({
     content: ''
 });
-let originalContent = '';
+let originalContent = '';   
 const barbecueStore = useBarbecueStore();
 barbecueStore.setBarbecue(props.barbecue);
 
@@ -339,6 +340,7 @@ const handleImagesChange = (event) => {
 
         <template #right-aside>
             <div class="aside-menu">
+                <FindFriendsRightAside />
             </div>
         </template>
     </MainLayout>
@@ -346,9 +348,9 @@ const handleImagesChange = (event) => {
 <style scoped>
 .aside-menu {
     width: 100%;
-    height: 100%;
     background: white;
     border-radius: 20px;
+    padding: 26px 30px;
 }
 
 .album {

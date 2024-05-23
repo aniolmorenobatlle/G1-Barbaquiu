@@ -165,9 +165,36 @@ class BarbecuesController extends Controller
     public function edit( Request $request, string $id)
     {
         $barbecue = Barbecue::where('id', $id)->with('images')->first();
+        $user = auth()->user();
+        $friends = $user->friends()->get();
         
+        $users = User::whereNotIn('id', $friends->pluck('id'))
+                ->where('id', '!=', $user->id)
+                ->inRandomOrder()
+                ->get();
+    
+        for ($i = 0; $i < count($users); $i++) {
+            $friendStatus = "none";
+            if ($user->isFriendWith($users[$i])) {
+                $friendStatus = 'friend';
+            } else if ($user->alreadySentFriendRequestTo($users[$i])) {
+                $friendStatus = 'sent';
+            } else if ($user->alreadyHasFriendRequestFrom($users[$i])) {
+                $friendStatus = 'received';
+            } 
+            $users[$i]->friendStatus = $friendStatus;
+        }
+
+        // get only the users that the friend status is none
+        $filteredUsers = [];
+        foreach ($users as $user) {
+            if ($user->friendStatus === 'none') {
+                $filteredUsers[] = $user;
+            }
+        }
         return Inertia::render('Barbecues/Edit', [
             'barbecue' => $barbecue,
+            'filteredUsers' => $filteredUsers,
         ]);
     }
 
