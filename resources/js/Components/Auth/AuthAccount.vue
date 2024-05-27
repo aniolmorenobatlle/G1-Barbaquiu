@@ -1,7 +1,17 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
 import { useAuthStore } from "@/stores/auth";
+import { useProfileStore } from "@/stores/profile";
+import axios from "axios";
+
 const authStore = useAuthStore();
+const profileStore = useProfileStore();
+
+
+const editProfile = () => {
+    console.log('Edit profile');
+    
+}
 </script>
 
 <template>
@@ -16,7 +26,7 @@ const authStore = useAuthStore();
             <span class="auth-account-surnames">{{ authStore.user.surnames }}</span>
         </div>
     </div>
-    <div class="auth-account-settings">
+    <div class="auth-account-settings" @click="editProfile">
         <div class="auth-account-settings-bubble">
             <img src="/assets/svg/settings.svg" alt="User settings" />
         </div>
@@ -25,19 +35,15 @@ const authStore = useAuthStore();
     <div class="no-auth-account-container flex gap-2" v-else>
 
         <div class="flex items-center justify-center dark:bg-gray-800">
-            <Link
-                :href="route('login')"
-                class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 bg-gray-50"
-            >
-                <span class="font-bold">Iniciar sessió</span>
+            <Link :href="route('login')"
+                class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 bg-gray-50">
+            <span class="font-bold">Iniciar sessió</span>
             </Link>
         </div>
         <div class="flex items-center justify-center dark:bg-gray-800 ">
-            <Link 
-                :href="route('register')"
-                class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 bg-gray-50"
-            >
-                <span class="font-bold">Registrar-me</span>
+            <Link :href="route('register')"
+                class="px-4 py-2 border flex gap-2 border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-slate-300 hover:shadow transition duration-150 bg-gray-50">
+            <span class="font-bold">Registrar-me</span>
             </Link>
         </div>
 

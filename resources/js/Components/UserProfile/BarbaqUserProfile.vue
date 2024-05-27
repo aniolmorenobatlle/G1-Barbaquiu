@@ -15,7 +15,7 @@ const authStore = useAuthStore();
 <template>
 
     <div class="barbaq-user-template">
-        <div class="left mt-5">
+        <div class="left">
 
             <div v-if="authStore.user && profileStore.user">
                 <div v-if="profileStore.user.id == authStore.user.id">
@@ -40,7 +40,7 @@ const authStore = useAuthStore();
             </div>
         </div>
         
-        <div class="right my-5 p-5">
+        <div class="right p-5">
             <FindFriendsRightAside />
         </div>
     </div>

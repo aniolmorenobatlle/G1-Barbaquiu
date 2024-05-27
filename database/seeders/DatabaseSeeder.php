@@ -12,6 +12,7 @@ use App\Models\Basket;
 use App\Models\Product;
 use App\Models\BarbecueFriendship;
 use App\Models\Review;
+use App\Models\Comment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -546,7 +547,45 @@ class DatabaseSeeder extends Seeder
             'price' => 3
         ]);
 
-        
+        Comment::create([
+            'user_id' => 1,
+            'barbecue_id' => 1,
+            'comment' => 'Hola, quin dia es la barbacoa?'
+        ]);
+        Comment::create([
+            'user_id' => 7,
+            'barbecue_id' => 1,
+            'comment' => 'Te molt bona pinta!'
+        ]);
+
+        Comment::create([
+            'user_id' => 8,
+            'barbecue_id' => 2,
+            'comment' => 'Epaa, aceptam la solicitud!'
+        ]);
+        Comment::create([
+            'user_id' => 10,
+            'barbecue_id' => 2,
+            'comment' => 'Pero que guay!'
+        ]);
+
+
+        Comment::create([
+            'user_id' => 6,
+            'barbecue_id' => 5,
+            'comment' => 'Esta una mica lluny no?'
+        ]);
+
+        Comment::create([
+            'user_id' => 9,
+            'barbecue_id' => 5,
+            'comment' => 'Jo anire 100% segur!'
+        ]);
+        Comment::create([
+            'user_id' => 11,
+            'barbecue_id' => 5,
+            'comment' => 'Pero que guay!'
+        ]);
     }
 
 }

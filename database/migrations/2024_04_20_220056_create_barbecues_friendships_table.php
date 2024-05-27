@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('guest_id')->constrained('users');
             $table->boolean('is_admin')->default(false);
             $table->boolean('accepted')->default(false);
+            $table->boolean('invitation')->default(false);
         });
     }
 

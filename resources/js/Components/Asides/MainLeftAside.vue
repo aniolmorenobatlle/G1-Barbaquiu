@@ -1,8 +1,10 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import { useAuthStore } from "@/stores/auth";
+import { useResponsiveStore } from '@/stores/responsive';
 import { defineProps, onMounted } from 'vue';
 const authStore = useAuthStore();
+const responsiveStore = useResponsiveStore();
 </script>
 
 <template>
@@ -24,10 +26,10 @@ const authStore = useAuthStore();
             </div>
         </Link>
 
-        <Link :href="route('participation.index')">
-            <div class="item" :class="{ active: route().current() === 'participation.index' }">
+        <Link :href="route('participations.index')">
+            <div class="item" :class="{ active: route().current() === 'participations.index' }">
                 <img src="/assets/svg/envelope.svg" alt="Icon" />
-                <span style="font-size: 0.9rem">Participacions</span>
+                <span>Barbacoes</span>
             </div>
         </Link>
         
@@ -42,6 +44,10 @@ const authStore = useAuthStore();
                 </div>
             </div>
         </Link>
+        <div class="item responsive" @click="responsiveStore.toggleFilters">
+            <img src="/assets/svg/settings-sliders.svg" alt="Icon" />
+            <span>Opcions</span>
+        </div>
     </div>
 </template>
 
@@ -55,7 +61,7 @@ const authStore = useAuthStore();
         height: fit-content;
         padding: 5px 5px;
         gap: 5px;
-        position:fixed;
+        position: fixed;
     }
 
     .counter {
@@ -108,6 +114,10 @@ const authStore = useAuthStore();
         background: #f2f2f2;
     }
 
+    .item.responsive {
+        display: none;
+    }
+
     @media (max-width: 1450px) {
         .main-left-aside-container {
             display: flex;
@@ -129,5 +139,11 @@ const authStore = useAuthStore();
         .item {
             grid-template-columns: 20px auto;
         }
+    }
+
+    @media (max-width: 1200px) {
+        .item.responsive {
+            display: flex;
+        }       
     }
 </style>

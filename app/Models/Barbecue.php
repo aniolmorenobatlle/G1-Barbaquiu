@@ -31,7 +31,7 @@ class Barbecue extends Model
 
     public function requests()
     {
-        return $this->belongsToMany(User::class, 'barbecues_friendships', 'guest_id', 'user_id')->withPivot('accepted', 'is_admin', 'barbecue_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'barbecues_friendships', 'guest_id', 'user_id')->wherePivot('invitation', false)->withPivot('accepted', 'is_admin', 'barbecue_id')->withTimestamps();
     }
 
     public function acceptedInvitations()
@@ -49,9 +49,17 @@ class Barbecue extends Model
         return $this->mergedRelationWithModel(User::class, 'barbecues_friendships_view');
     }
 
-    public function sendInvitation(User $user)
+    public function sendInvitation(User $guest, User $user)
     {
-        $this->invitations()->attach($user->id, ['accepted' => false, 'barbecue_id' => $this->id]);
+        // $this->invitations()->attach($guest->id, ['accepted' => false, 'barbecue_id' => $this->id, 'invitation' => true]);
+
+        BarbecueFriendship::create([
+            'user_id' => $user->id,
+            'guest_id' => $guest->id,
+            'accepted' => false,
+            'barbecue_id' => $this->id,
+            'invitation' => true,
+        ]);
     }
 
     public function recieveJoinRequest(User $user)

@@ -95,7 +95,7 @@ const deletefriend = (id) => {
 <template>
     <MainLayout title="Amics">
         <template #main-content>
-            <div class="form-control">
+            <div class="form-control mb-4">
                 <div class="relative text-gray-600 w-full">
                     <input type="search" name="serch" placeholder="Cercar amics..."
                         class="bg-white h-10 px-5 input-search pr-10 rounded-full text-sm focus:outline-none w-full"
@@ -111,10 +111,10 @@ const deletefriend = (id) => {
                     </button>
                 </div>
             </div>
-            <div class="grid grid-friends mt-[20px] mb-[20px]">
+            <div class="grid grid-friends mb-[20px]">
                 <div v-for="(friend, index) in friends" :key="friend.id"
                     :class="['friend-card', { 'hidden': index >= friendsPerPage }]"
-                    class="friend-card w-40 bg-white border border-gray-200 rounded-2xl dark:bg-gray-800 dark:border-gray-700 mt-4">
+                    class="friend-card w-40 bg-white border border-gray-200 rounded-2xl dark:bg-gray-800 dark:border-gray-700">
                     <div class="flex justify-end px-2 pt-3">
                     </div>
                     <div class="flex flex-col items-center pb-5">
@@ -126,18 +126,14 @@ const deletefriend = (id) => {
                             </h5>
                         </div>
                         </Link>
-                        <div class="socials flex items-center justify-center mt-3 space-x-3">
-                            <div class="message">
-                                <button class="hover:bg-[#FF6100] rounded-full p-2 border-gray-200 transition duration-100 border-2 hover:border-[#FF6100] 
-                                font-medium text-gray-800 text-sm">
-                                    Enviar missatge
-                                </button>
-                            </div>
+                        <div class="socials flex items-center justify-center w-full mt-3 space-x-3">
                             <div class="delete">
                                 <form @submit.prevent="deletefriend(friend.id)">
                                 <div class="tooltip" data-tip="Eliminar amic">
-                                    <button class="hover:bg-[#FF6100] rounded-full p-2 border-gray-200 transition duration-100 border-2 hover:border-[#FF6100] 
-                                font-medium text-gray-800 text-sm">
+                                    <button class="hover:bg-[#FF6100] flex flex-row rounded-full p-2 border-gray-200 transition duration-100 border-2 hover:border-[#FF6100] 
+                                font-medium text-gray-800 text-sm space-x-2 items-center">
+                                        <p class="text-sm">
+                                            Eliminar</p>
                                         <img src="/assets/svg/user-check.svg" alt="Eliminar" class="w-4 h-4" />
                                     </button>
                                 </div>

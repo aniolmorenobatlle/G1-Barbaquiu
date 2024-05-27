@@ -32,7 +32,14 @@ function acceptBarbecueJoinRequest(barbecueId, userId) {
 }
 
 function rejectBarbecueJoinRequest(barbecueId, userId) {
-    axios.delete('/barbecues/' + id + '/join').then(() => {
+    axios.delete(route('rejectbarbecuejoinrequest', [barbecueId, userId])).then(res => {
+        authStore.updateUserData();
+    });
+}
+
+function acceptBarbecueInvitation(barbecueId, userId) {
+    axios.post(`acceptbarbecueinvitation/${barbecueId}/${userId}`).then(res => {
+        console.log(res.data);
         authStore.updateUserData();
     });
 }
@@ -43,7 +50,6 @@ function rejectBarbecueJoinRequest(barbecueId, userId) {
     <MainLayout title="Notificacions">
         <template #main-content>
             <div class="notifications-container">
-                
                 <div class="notification" v-for="notification in authStore.user?.notifications" :key="notification.id">
                     <div class="notification-content" v-if="notification.type == 'friend_request'">
                         <div class="notification-left">
@@ -94,6 +100,34 @@ function rejectBarbecueJoinRequest(barbecueId, userId) {
                         <div class="notification-right">
                             <div class="notification-buttons">
                                 <button @click="acceptBarbecueJoinRequest(notification.barbecue?.id, notification.user?.id)">Acceptar</button>
+                                <button @click="rejectBarbecueJoinRequest(notification.barbecue?.id, notification.user?.id)">Rebutjar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notification-content" v-if="notification.type == 'barbecue_invitation'">
+                        <div class="notification-left">
+                            <div class="profile-image">
+                                <img :src="notification.user?.image" alt="Imatge de perfil" />
+                            </div>
+                            <div>
+                                <div class="profile-names">
+                                    <strong>
+                                        <UserLink :userId="notification.friend?.id"
+                                            :name="notification.user?.name + ' ' + notification.user?.surnames" />
+                                    </strong>
+                                    <span>&nbsp;t'ha invitat a&nbsp;</span>
+                                    <strong>
+                                        <BarbecueLink :barbecueId="notification.barbecue?.id" :name="notification.barbecue?.title" />
+                                    </strong>
+                                </div>
+                                <div class="notification-date">
+                                    {{ formatDate(notification.created_at) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-right">
+                            <div class="notification-buttons">
+                                <button @click="acceptBarbecueInvitation(notification.barbecue?.id, notification.guest_id)">Acceptar</button>
                                 <button @click="rejectBarbecueJoinRequest(notification.barbecue?.id, notification.user?.id)">Rebutjar</button>
                             </div>
                         </div>

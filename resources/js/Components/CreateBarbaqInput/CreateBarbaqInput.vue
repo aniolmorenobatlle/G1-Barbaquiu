@@ -73,7 +73,7 @@ function openModalCalendar() {
 }
 
 function closeModalCalendar() {
-    const stringDate = `${dateForm.day}/${dateForm.month}/${dateForm.year} ${dateForm.hour}:${dateForm.minute}h`;
+    const stringDate = `${dateForm.year}-${dateForm.month}-${dateForm.day}T${dateForm.hour}:${dateForm.minute}`;
     barbecueForm.date = stringDate;
 
     showModalCalendar.value = false;

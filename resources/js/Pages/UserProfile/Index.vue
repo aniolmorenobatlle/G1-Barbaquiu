@@ -28,9 +28,9 @@ profileStore.setStatus(props.friendStatus);
 </script>
 
 <template>
-    <ProfileLayout :title="profileStore.user.name + ' ' + profileStore.user.surnames" 
-    :user="user">
+    <ProfileLayout title="Inici" :user="user">
         <template #main-content >
+            <Banner class="banner-profile "/>
             <BarbaqUserProfile />
         </template>
     </ProfileLayout>

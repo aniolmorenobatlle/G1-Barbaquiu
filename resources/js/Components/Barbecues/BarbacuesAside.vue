@@ -6,7 +6,6 @@ import { defineProps } from 'vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import BarbaqUserProfile from '../UserProfile/BarbaqUserProfile.vue';
 import axios from 'axios';
-import MapOnSteroids from '../Steroids/MapOnSteroids.vue';
 import PhotoAlbum from '../Barbecues/PhotoAlbum/PhotoAlbum.vue';
 
 import AddProductModal from '../Barbecues/AddProductModal.vue';
@@ -19,19 +18,6 @@ const props = defineProps({
     },
 });
 
-
-onMounted(() => {
-    const mapSelector = document.querySelector(".map-on-steroids-opener");
-    mapSelector.style.visibility = "hidden";
-    mapSelector.style.position = "fixed";
-});
-
-onUnmounted(() => {
-    const mapSelector = document.querySelector(".map-on-steroids-opener");
-    mapSelector.style.visibility = "visible";
-    mapSelector.style.position = "relative";
-
-})
 
 const highlightedArea = ref(null);
 const showAddUsers = ref(false);
@@ -76,10 +62,32 @@ const inviteUser = (friendId) => {
     highlightArea('usersinvite');
 }
 
+
+function removeMemberFromBBQ(barbecueId, userId) {
+    axios.delete(route('rejectbarbecuejoinrequest', [barbecueId, userId])).then(res => {
+        authStore.updateUserData();
+        barbecueStore.removeMember(userId);
+    });
+}
+
 const deleteMember = (memberId) => {
     form.user_id = memberId;
-    form.delete('/destroyfriendship/' + barbecue.id);
-    console.log('Delete member', memberId);
+    // form.delete(route('destroyfriendship', { id: barbecue.id }));
+    removeMemberFromBBQ(barbecue.id, memberId);
+    // axios.delete(route('destroyfriendship'), {
+    //     data: {
+    //         user_id: memberId,
+    //         barbecue_id: barbecue.id,
+    //     }
+    // })
+    //     .then(response => {
+    //         console.log('Member deleted', response.data);
+    //         barbecueStore.removeMember(memberId);
+    //     })
+    //     .catch(error => {
+    //         console.error('Error deleting member:', error);
+    //     });
+    // console.log('Delete member', memberId);
 }
 
 function addEvent() {
@@ -342,7 +350,6 @@ const minusProduct = (product) => {
             'notSelected': highlightedArea !== 'maps' && highlightedArea !== null
         }">
             <img src="/assets/img/map.png" alt="Mapa" class="img-fluid hidden" @click="handleMapClick">
-            <MapOnSteroids v-model="coordinates" :offsetX="-245" :offsetY="300" />
 
             <iframe class="w-full h-50 mapagoogle"
                 :src="'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d877.7659237744726!2d' + barbecue.longitude + '!3d' + barbecue.latitude + '!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2ses!4v1715779032596!5m2!1ses!2ses'"
@@ -378,13 +385,16 @@ const minusProduct = (product) => {
                 <div class="pay">
                     <p>A pagar</p>
                     <!-- my items assogned to my * quantity -->
-                    <h1 v-if="barbecue.basket?.basket_product">{{
-                        barbecue.basket.basket_product.reduce(
-                            (total, item) => total + parseFloat(item.product.price) * item.quantity,
-                            0
-                        ) / $page.props.members.length .toFixed(2)
-                    }}<span>€</span></h1>
-                    <h1 v-else>0 €</h1>
+                    <h1 v-if="barbecue.basket?.basket_product">
+                        {{
+                            (barbecue.basket.basket_product.reduce(
+                                (total, item) => total + parseFloat(item.product.price) * item.quantity,
+                        0
+                        ) / $page.props.members.length).toFixed(2)
+                        }}<span>€</span>
+                    </h1>
+                    <h1 v-else>0.00 €</h1>
+
 
                 </div>
             </div>
@@ -408,7 +418,7 @@ const minusProduct = (product) => {
                     <img src="/assets/svg/arrow-right.svg" alt="Fletxa dreta" class="img-fluid bounce-left">
                 </div>
 
-                <div v-if="highlightedArea === 'users'" v-for="member in $page.props.members" :key="member.id">
+                <div v-if="highlightedArea === 'users'" v-for="member in barbecueStore.barbecue.members" :key="member.id">
                     <div class="flex items-center gap-2 bg-white p-1 rounded-xl mb-2 w-full mt-2">
                         <Link :href="route('profile.show', member.id)"
                             class="flex items-center bg-white gap-2 rounded-xl  w-full cursor-pointer">
@@ -477,7 +487,7 @@ const minusProduct = (product) => {
                 </div>
             </div>
             <div class="inviteusers"
-                v-if="authStore.user.id === barbecue.user_id || barbecue.friendships.find(friendship => friendship.user_id === authStore.user.id && friendship.is_admin === 1)"
+                v-if="authStore?.user?.id === barbecue.user_id || barbecue.friendships.find(friendship => friendship.user_id === authStore.user?.id && friendship.is_admin === 1)"
                 @click="highlightArea('usersinvite')" :class="{
                     'selected': highlightedArea === 'usersinvite',
                     'notSelected': highlightedArea !== 'usersinvite' && highlightedArea !== null

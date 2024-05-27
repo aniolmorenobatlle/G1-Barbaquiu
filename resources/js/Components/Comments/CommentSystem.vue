@@ -100,8 +100,9 @@ function sendComment() {
 </script>
 
 <template>
+    <span>Comentaris ({{ root.length }}) </span>
     <div class="barbecue-comment-input-wrapper">
-        <span>Comentaris ({{ root.length }}) </span>
+        
         <div class="barbecue-comment-input" v-if="auth.user">
             <div class="barbecue-comment-profile-image">
                 <img :src="auth.user.image" alt="Profile image">
@@ -123,9 +124,10 @@ function sendComment() {
                     :placeholder="answerComment ? 'Respon a ' + answerComment.user.name + ' ' + answerComment.user.surnames : 'Escriu un comentari...'">
                 </textarea>
             </div>
-        </div>
-        <button class="barbecue-comment-send" @click="sendComment" :disabled="!commentContent"
+            <button class="barbecue-comment-send" @click="sendComment" :disabled="!commentContent"
             v-if="auth.user">Enviar</button>
+        </div>
+
     </div>
     <div class="barbecue-footer">
         <div class="barbecue-comments" v-for="(comment, index) in root">
@@ -139,10 +141,8 @@ function sendComment() {
 .barbecue-comment-send {
     background: #FF6100;
     color: #fff;
-    margin-left: auto;
     padding: 5px 10px;
     border-radius: 10px;
-    width: fit-content;
     border: 1px solid transparent;
 
 }
@@ -175,6 +175,8 @@ function sendComment() {
     border: 1px solid #ddd;
     border-radius: 10px;
     overflow: hidden;
+    /* width: 100%; */
+    
 }
 
 .barbecue-comment-input-itself-answer {
@@ -230,13 +232,15 @@ function sendComment() {
 .barbecue-comment-input {
     border-radius: 10px;
     display: grid;
-    grid-template-columns: 50px auto;
+    grid-template-columns: 50px auto 80px;
     gap: 10px;
+    width: 100%;
 }
 
 .barbecue-comment-input-wrapper {
-    display: grid;
+    display: flex;
     gap: 5px;
+    width: 100%;
 }
 
 .barbecue-comment-profile-image {

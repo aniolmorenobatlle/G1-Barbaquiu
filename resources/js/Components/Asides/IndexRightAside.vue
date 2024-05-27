@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, defineProps } from 'vue';
     import SearchOnSteroids from '@/Components/Steroids/SearchOnSteroids.vue';
     import ScaleOnSteroids from '@/Components/Steroids/ScaleOnSteroids.vue';
     import SelectOnSteroids from '@/Components/Steroids/SelectOnSteroids.vue';
@@ -8,6 +8,14 @@
     import { useBarbecueStore } from '@/stores/barbecue';
 
     const barbecueStore = useBarbecueStore();
+
+    const props = defineProps({
+        alwaysVisible: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    })
 
     const scales = [
         { value: 10, label: '10 km' },
@@ -68,7 +76,7 @@
 </script>
 
 <template>
-    <div class="index-right-aside-container">
+    <div class="index-right-aside-container" :class="{ 'always-visible': props.alwaysVisible }">
         <div class="filter">
             <h3>Cercar barbacoes</h3>
             <SearchOnSteroids v-model="searchValue" @input="updateBarbecues" />
@@ -152,11 +160,12 @@
     }
 
     @media (max-width: 1200px) {
-        .index-right-aside-container {
-            width: 100%;
+        .index-right-aside-container:not(.always-visible) {
+            /* width: 100%;
             border-radius: 0;
             height: 100%;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr; */
+            visibility: hidden;
         }
 
         h3 {

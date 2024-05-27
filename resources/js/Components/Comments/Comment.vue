@@ -116,7 +116,7 @@ function writeComment(treePath) {
 
 .comment-vertical-branch {
     position: absolute;
-    --line-width: 1px;
+    --line-width: 2px;
     --border-radius: 15px;
     width: calc(var(--line-width));
     left: calc(25px - var(--line-width) / 2);

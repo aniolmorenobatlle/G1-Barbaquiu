@@ -171,6 +171,7 @@ class User extends Authenticatable
         $this->recievedFriendRequests()->detach($user->id);
     }
 
+
     public function notifications()
     {
         // this method will return list of notifications
@@ -181,6 +182,14 @@ class User extends Authenticatable
 
         $friendRequests = $this->pendingFriendsRequests()->get();
         $barbecuesJoinRequests = $this->barbecuesJoinRequests();
+
+        // $barbecueInvitations = $this->barbecueInvitations()->where('accepted', false)->with('barbecue', 'user');
+        // also load the guest_id from 'users' table as 'guest' in the collection
+        // $barbecueInvitations = $this->barbecueInvitations()->where('accepted', false)->with('barbecue', 'user')->get()->toArray();
+        $barbecueInvitations = BarbecueFriendship::with('barbecue', 'user')->where('guest_id', $this->id)->where('accepted', false)->where('invitation', true)->get()->toArray();
+        
+
+        // dd($barbecueInvitations->get()->toArray());
         
 
         foreach ($friendRequests as $friendRequest) {
@@ -193,11 +202,27 @@ class User extends Authenticatable
 
         foreach ($barbecuesJoinRequests as $barbecueJoinRequest) {
             $barbecueJoinRequest['type'] = 'barbecue_join_request';
+            if ($barbecueJoinRequest['invitation'] == false) {
+                $notifications[] = [
+                    'type' => 'barbecue_join_request',
+                    'barbecue' => $barbecueJoinRequest['barbecue'],
+                    'user' => $barbecueJoinRequest['user'],
+                    'created_at' => $barbecueJoinRequest['created_at'],
+                    'invitation' => false
+                ];
+            }
+
+        }
+
+        foreach ($barbecueInvitations as $barbecueInvitation) {
+            $barbecueInvitation['type'] = 'barbecue_invitation';
             $notifications[] = [
-                'type' => 'barbecue_join_request',
-                'barbecue' => $barbecueJoinRequest['barbecue'],
-                'user' => $barbecueJoinRequest['user'],
-                'created_at' => $barbecueJoinRequest['created_at'],
+                'type' => 'barbecue_invitation',
+                'barbecue' => $barbecueInvitation['barbecue'],
+                'user' => $barbecueInvitation['user'],
+                'created_at' => $barbecueInvitation['created_at'],
+                'invitation' => $barbecueInvitation['invitation'],
+                'guest_id' => $barbecueInvitation['guest_id'],
             ];
         }
 
@@ -233,35 +258,37 @@ class User extends Authenticatable
 
     public function barbecueInvitations()
     {
-        return $this->barbecuesFriendships()->where('accepted', false);
+        return $this->hasMany(BarbecueFriendship::class, 'guest_id')->where('invitation', true);
     }
 
     public function barbecuesJoinRequests()
     {
-        $barbecuesCollection = $this->barbecues();
+        // $barbecuesCollection = $this->barbecues();
 
-        $barbecues = $barbecuesCollection->get()->toArray();
+        // $barbecues = $barbecuesCollection->get()->toArray();
 
-        $reqs = [];
+        // $reqs = [];
 
-        foreach ($barbecues as $barbecue) {
-            // $barbecue->members = $barbecue->members()->get();
-            $bbq = Barbecue::where('id', $barbecue['id'])->first();
-            // dd only the first one bbq
-            $bbqReqs = $bbq->requests()->get()->toArray();
+        // foreach ($barbecues as $barbecue) {
+        //     // $barbecue->members = $barbecue->members()->get();
+        //     $bbq = Barbecue::where('id', $barbecue['id'])->first();
+        //     // dd only the first one bbq
+        //     $bbqReqs = $bbq->requests()->get()->toArray();
 
 
-            $bbqReqs = array_filter($bbqReqs, function ($req) {
-                return $req['pivot']['accepted'] == 0;
-            });
+        //     $bbqReqs = array_filter($bbqReqs, function ($req) {
+        //         return $req['pivot']['accepted'] == 0;
+        //     });
             
-            foreach ($bbqReqs as $req) {
-                $req['user'] = $req;
-                $req['barbecue'] = $bbq->attributes;
-                $reqs[] = $req;
-            }
-        }
-        return $reqs;
+        //     foreach ($bbqReqs as $req) {
+        //         $req['user'] = $req;
+        //         $req['barbecue'] = $bbq->attributes;
+        //         $reqs[] = $req;
+        //     }
+        // }
+        // return $reqs;
+
+        return BarbecueFriendship::with('barbecue', 'user')->where('guest_id', $this->id)->where('invitation', false)->where('accepted', false)->get()->toArray();
 
     }
 

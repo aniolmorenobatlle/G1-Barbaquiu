@@ -3,7 +3,6 @@ import { defineProps } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import AuthAccount from '@/Components/Auth/AuthAccount.vue';
 import MainLeftAside from '@/Components/Asides/MainLeftAside.vue';
-import Banner from "@/Components/UserProfile/Banner.vue";
 import { useAuthStore } from "@/stores/auth";
 
 
@@ -34,7 +33,6 @@ const props = defineProps({
                 <MainLeftAside />
             </div>
             <div class="main-layout-content-wrapper">
-                <Banner class="banner-profile " />
                 <slot name="main-content">
 
                 </slot>
@@ -45,7 +43,7 @@ const props = defineProps({
 
 <style scoped>
 .main-layout-left-aside {
-    width: 100%;
+    width: 245px;
 }
 
 .main-layout-header {

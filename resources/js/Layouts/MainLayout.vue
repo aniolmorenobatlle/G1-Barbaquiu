@@ -77,10 +77,13 @@ const props = defineProps({
         bottom: 0;
         z-index: 100;
     }
-
     .main-layout-content-wrapper {
         grid-template-columns: 720px auto;
-        height: calc(100% - 150px);
+        height: calc(100% - 175px);
+    }
+
+    .main-layout-container {
+        height: calc(100vh - 120px);
     }
 }
 
@@ -90,10 +93,6 @@ const props = defineProps({
     }
 
     .main-layout-right-aside {
-        width: 100vw;
-        height: 200px;
-        position: fixed;
-        bottom: 0;
     }
 
     .main-layout-header {

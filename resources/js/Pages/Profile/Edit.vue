@@ -1,12 +1,12 @@
 <script setup>
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue';
+import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
+import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
 import ProfileLayout from '@/Layouts/ProfileLayout.vue';
 import { useAuthStore } from "@/stores/auth";
 import { Link } from '@inertiajs/vue3';
 import { useProfileStore } from "@/stores/profile";
-import Logout from './Partials/Logout.vue';
+import Logout from '@/Pages/Profile/Partials/Logout.vue';
 import Banner from "@/Components/UserProfile/Banner.vue";
 
 
@@ -21,7 +21,7 @@ authStore.updateUserData();
 <template>
     <ProfileLayout title="Inici">
         <template #main-content>
-            <div class="max-w-7xl mx-auto space-y-6 overflow my-5">
+            <div class="max-w-7xl mx-auto space-y-6 overflow">
 
                 <div class="flex justify-start items-center bg-white shadow sm:rounded-[20px] p-2 w-full" >
                     <Link 

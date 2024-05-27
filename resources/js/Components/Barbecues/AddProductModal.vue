@@ -56,7 +56,6 @@ const addProduct = () => {
 };
 
 const addOldProduct = (product) => {
-    // user to setbarbacue
     const user = authStore.user;
     axios.post(route('addproduct', { id: barbecueStore.barbecue.id }), {
         product_name: product.name,

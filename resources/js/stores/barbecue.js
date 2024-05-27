@@ -77,6 +77,15 @@ export const useBarbecueStore = defineStore('barbecue', {
       }
       this.basket = { ...this.basket };
       console.log(this.basket, 'removeBasketProduct');
+    },
+    removeMember(memberId) {
+      // this.barbecue.members = this.barbecue.members.filter(member => member.id !== memberId);
+
+      this.barbecue.members.forEach((member, index) => {
+        if (member.id === memberId) {
+          this.barbecue.members.splice(index, 1);
+        }
+      });
     }
   },
 });
