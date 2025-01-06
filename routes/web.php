@@ -13,7 +13,6 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\DiscordBotController;
-use App\Http\Controllers\ChatMessagesController;
 use App\Http\Controllers\ParticipationController;
 
 Route::middleware('auth')->group(function () {
@@ -32,16 +31,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/sendbarbecuejoinrequest/{id}', [BarbecuesController::class, 'sendBarbecueJoinRequest'])->name('sendbarbecuejoinrequest');
 
-    Route::post('/api/chat/{barbecueId}', [ChatMessagesController::class, 'store']);
-
     Route::resource('participations', ParticipationController::class);
 
     Route::get('/api/my-barbecues', [BarbecuesController::class, 'apiMyBarbecues']);    
 
     Route::get('friends', [FriendsController::class, 'index'])->name('friends.index');
-
-    Route::get('/auth/google', [GoogleController::class, 'index']);
-    Route::get('/auth/google/callback', [GoogleController::class, 'store']);
 
     Route::delete('/friends/{id}', [FriendsController::class, 'destroy'])->name('friends.destroy');
 
@@ -72,5 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('comments', CommentsController::class);
     Route::post('/review', [BarbecuesController::class, 'review'])->name('review');
 });
+
+Route::get('/auth/google', [GoogleController::class, 'index']);
+Route::get('/auth/google/callback', [GoogleController::class, 'store']);
 
 require __DIR__ . '/auth.php';

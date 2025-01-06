@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 
-use App\Models\ChatMessage;
 use App\Events\GotMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

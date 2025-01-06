@@ -11,7 +11,6 @@ use App\Models\Friend;
 use App\Models\Product;
 use App\Models\Barbecue;
 use App\Models\BarbecueFriendship;
-use App\Models\ChatMessage;
 use App\Models\BasketProduct;
 use App\Models\Basket;
 use App\Models\Review;
